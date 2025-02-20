@@ -1,12 +1,22 @@
-# syntax=docker/dockerfile:1
+# Use a stable Python version
+FROM python:3.9-slim
 
-FROM python:3.8-slim-buster
-
+# Set the working directory
 WORKDIR /app
 
-COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
+# Copy requirements file first (for caching)
+COPY requirements.txt .
 
+# Ensure pip is up-to-date
+RUN apt-get update && apt-get install -y gcc libpq-dev \
+    && pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the app files
 COPY . .
 
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+# Expose port
+EXPOSE 5000
+
+# Run the app
+CMD ["python", "app.py"]
