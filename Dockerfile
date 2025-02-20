@@ -1,21 +1,25 @@
-# Use a stable Python version
+# Use a stable Python image
 FROM python:3.9-slim
 
 # Set the working directory
 WORKDIR /app
 
-# Copy requirements file first (for caching)
+# Copy the requirements file first (for caching)
 COPY requirements.txt .
 
-# Ensure pip is up-to-date
-RUN apt-get update && apt-get install -y gcc libpq-dev \
-    && pip install --upgrade pip \
+# Install required system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Ensure pip is up-to-date and install Python dependencies
+RUN pip install --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the app files
+# Copy the rest of the application files
 COPY . .
 
-# Expose port
+# Expose application port
 EXPOSE 5000
 
 # Run the app
