@@ -9,7 +9,7 @@ node {
 
     stage('Build image') {
   
-       app = sudo docker.build("yogik001/tech-ai-dok")
+       app =  docker.build("yogik001/tech-ai-dok")
     }
 
     stage('Test image') {
