@@ -20,12 +20,16 @@ node {
         }
     }
 
-    stage('Push image') {
-        
-        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-            app.push("${env.BUILD_NUMBER}")
+    stage('Push Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
+                        app.push("${env.BUILD_NUMBER}")
+                        app.push("latest")  // Also push the latest tag if needed
+                    }
+                }
+            }
         }
-    }
     
     stage('Trigger ManifestUpdate') {
                 echo "triggering updatemanifestjob"
