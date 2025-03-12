@@ -15,7 +15,7 @@ pipeline {
         stage('Build image') {
             steps {
                 script {
-                    app = docker.build("yogik001/tech-ai-dok")
+                    app = docker.build("yogik001")
                 }
             }
         }
