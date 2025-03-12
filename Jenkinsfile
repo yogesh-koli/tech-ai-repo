@@ -1,5 +1,9 @@
-node {
+	node {
     def app
+
+           environment {
+                         DOCKERHUB_CREDENTIALS = 'dockerhub'
+            }
 
     stage('Clone repository') {
       
@@ -20,16 +24,16 @@ node {
         }
     }
 
-    stage('Push Image') {
-            steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
-                        app.push("${env.BUILD_NUMBER}")
-                        app.push("latest")  // Also push the latest tag if needed
-                    }
-                }
+    stage('Push to DockerHub')
+ {
+    steps {
+        script {
+            docker.withRegistry('', DOCKERHUB_CREDENTIALS) {
+                dockerImage.push()
             }
         }
+    }
+}
     
     stage('Trigger ManifestUpdate') {
                 echo "triggering updatemanifestjob"
