@@ -28,7 +28,7 @@
  {
     steps {
         script {
-            docker.withRegistry('', DOCKERHUB_CREDENTIALS) {
+            docker.withRegistry('', dockerhub) {
                 dockerImage.push()
             }
         }
