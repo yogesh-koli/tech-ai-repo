@@ -1,42 +1,52 @@
-	node {
-    def app
+pipeline {
+    agent any
 
-           environment {
-                         DOCKERHUB_CREDENTIALS = 'dockerhub'
-            }
-
-    stage('Clone repository') {
-      
-
-        checkout scm
+    environment {
+        DOCKERHUB_CREDENTIALS = 'dockerhub'
     }
 
-    stage('Build image') {
-  
-       app =  docker.build("yogik001/tech-ai-dok")
-    }
-
-    stage('Test image') {
-  
-
-        app.inside {
-            sh 'echo "Tests passed"'
-        }
-    }
-
-    stage('Push to DockerHub')
- {
-    steps {
-        script {
-            docker.withRegistry('', dockerhub) {
-                dockerImage.push()
+    stages {
+        stage('Clone repository') {
+            steps {
+                checkout scm
             }
         }
-    }
-}
-    
-    stage('Trigger ManifestUpdate') {
-                echo "triggering updatemanifestjob"
-                build job: 'updatemanifest', parameters: [string(name: 'DOCKERTAG', value: env.BUILD_NUMBER)]
+
+        stage('Build image') {
+            steps {
+                script {
+                    app = docker.build("yogik001/tech-ai-dok")
+                }
+            }
         }
+
+        stage('Test image') {
+            steps {
+                script {
+                    app.inside {
+                        sh 'echo "Tests passed"'
+                    }
+                }
+            }
+        }
+
+        stage('Push to DockerHub') {
+            steps {
+                script {
+                    docker.withRegistry('', DOCKERHUB_CREDENTIALS) {
+                        app.push()
+                    }
+                }
+            }
+        }
+
+        stage('Trigger ManifestUpdate') {
+            steps {
+                script {
+                    echo "Triggering updatemanifest job"
+                    build job: 'updatemanifest', parameters: [string(name: 'DOCKERTAG', value: env.BUILD_NUMBER)]
+                }
+            }
+        }
+    }
 }
