@@ -34,7 +34,9 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-    sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+                        sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+                        sh "docker tag yogesh-koli/yogik001:${env.BUILD_NUMBER} $DOCKER_USER/yogik001:${env.BUILD_NUMBER}"
+                        sh "docker push $DOCKER_USER/yogik001:${env.BUILD_NUMBER}"
 }
 
                     }
