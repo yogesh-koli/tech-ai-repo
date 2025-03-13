@@ -15,7 +15,7 @@ pipeline {
         stage('Build image') {
             steps {
                 script {
-                    app = docker.build("tech-repo/tech-img")
+                    app = docker.build("yogesh114/tech-img")
                 }
             }
         }
@@ -35,8 +35,8 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                         sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
-                        sh "docker tag yogesh114/tech-repo/tech-img:${env.BUILD_NUMBER} $DOCKER_USER/tech-repo/tech-img:${env.BUILD_NUMBER}"
-                        sh "docker push $DOCKER_USER/tech-repo/tech-img:${env.BUILD_NUMBER}"
+                        sh "docker tag yogesh114/tech-img:${env.BUILD_NUMBER} $DOCKER_USER/tech-img:${env.BUILD_NUMBER}"
+                        sh "docker push $DOCKER_USER/tech-img:${env.BUILD_NUMBER}"
 }
 
                     }
