@@ -15,7 +15,7 @@ pipeline {
         stage('Build image') {
             steps {
                 script {
-                    app = docker.build("tech-img")
+                     app = docker.build("tech-img:${env.BUILD_NUMBER}")
                 }
             }
         }
